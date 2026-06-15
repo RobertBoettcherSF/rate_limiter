@@ -21,23 +21,4 @@ project Rate_Limiter is
    for Object_Dir use "obj";
    for Exec_Dir use "bin";
 
-   --  Compiler options for SPARK
-   package Compiler is
-      for Default_Switches ("Ada") use
-        ("-gnatX",       --  Enable SPARK extensions
-         "-gnata",       --  Enable assertions
-         "-gnatwae",     --  Warnings as errors
-         "-gnatwe");     --  Treat warnings as errors
-   end Compiler;
-
-   --  SPARK specific package to configure gnatprove
-   package Proof is
-      for Switches ("Ada") use ("-u");  --  Disable loop unrolling
-   end Proof;
-
-   --  Builder options
-   package Builder is
-      for Executable ("test_rate_limiter.adb") use "test_rate_limiter";
-   end Builder;
-
 end Rate_Limiter;
