@@ -1,5 +1,5 @@
 --  rate_limiter.ads
---  Version: 0.014
+--  Version: 0.015
 --  
 --  Rate Limiter Package Specification
 --  Throttles operations (e.g., for sensor sampling)
@@ -44,7 +44,7 @@ is
    --  @return True if operation is allowed, False if rate limited
    function Is_Allowed (Limiter : Rate_Limiter_Config) return Boolean
      with Global => (State),
-          Volatile => (Clock);
+          Volatile => True;
 
    --  Get the minimum interval for a rate limiter
    --  
