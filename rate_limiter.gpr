@@ -1,0 +1,52 @@
+--  rate_limiter.gpr
+--  
+--  GNAT Project File for Rate Limiter
+--  
+--  Copyright (C) 2024 RobertBoettcherSF
+--  
+--  This program is free software: you can redistribute it and/or modify
+--  it under the terms of the GNU General Public License as published by
+--  the Free Software Foundation, either version 3 of the License, or
+--  (at your option) any later version.
+--
+--  This program is distributed in the hope that it will be useful,
+--  but WITHOUT ANY WARRANTY; without even the implied warranty of
+--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--  GNU General Public License for more details.
+
+project Rate_Limiter is
+
+   --  Project configuration
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Main use ("test_rate_limiter.adb");
+
+   --  SPARK configuration for formal verification
+   for Languages use ("Ada");
+   for Language ("Ada") use
+      ("SPARK", "SPARK_2014");
+
+   --  Compiler options
+   package Compiler is
+      for Default_Switches ("Ada") use
+        ("-gnatX",       --  Enable SPARK extensions
+         "-gnatk",       --  Check SPARK contracts
+         "-gnatN",       --  No elaboration checks (for SPARK)
+         "-gnata",       --  Enable assertions
+         "-gnatwae",     --  Warnings as errors
+         "-gnatwe");     --  Treat warnings as errors
+   end Compiler;
+
+   --  Builder options
+   package Builder is
+      for Executable ("test_rate_limiter.adb") use "test_rate_limiter";
+   end Builder;
+
+   --  SPARK specific options
+   package SPARK is
+      for Proof_Tool use "gnatprove";
+      for Flow_Tool use "gnatflow";
+   end SPARK;
+
+end Rate_Limiter;
