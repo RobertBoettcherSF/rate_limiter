@@ -25,6 +25,7 @@ project Rate_Limiter is
    package Compiler is
       for Default_Switches ("Ada") use
         ("-gnatX",       --  Enable SPARK extensions
+         "-gnatk0",      --  Disable loop unrolling (required numeric value)
          "-gnata",       --  Enable assertions
          "-gnatwae",     --  Warnings as errors
          "-gnatwe");     --  Treat warnings as errors
