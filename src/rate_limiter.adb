@@ -1,4 +1,5 @@
 --  rate_limiter.adb
+--  Version: 0.004
 --  
 --  Rate Limiter Package Body
 --  Implementation of rate limiting functionality
