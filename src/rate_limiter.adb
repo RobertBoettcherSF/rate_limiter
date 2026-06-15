@@ -1,5 +1,5 @@
 --  rate_limiter.adb
---  Version: 0.006
+--  Version: 0.007
 --  
 --  Rate Limiter Package Body
 --  Implementation of rate limiting functionality
@@ -38,13 +38,21 @@ is
    function Is_Allowed (Limiter : Rate_Limiter_Config) return Boolean is
       Current_Time : constant Time := Clock;
       Time_Diff    : Time_Span;
+      Seconds      : Duration;
+      Millis       : Duration;
       Elapsed_Ms   : Natural;
    begin
       Time_Diff := Current_Time - Last_Execution_Time;
       
-      --  Safe conversion from Time_Span to Natural milliseconds
       if Time_Diff >= Time_Span_Zero then
-         Elapsed_Ms := Natural(To_Duration(Time_Diff) * 1000.0);
+         Seconds := To_Duration(Time_Diff);
+         Millis := Seconds * 1000;
+         --  Convert to Natural, handling potential overflow
+         if Millis <= Duration(Natural'Last) then
+            Elapsed_Ms := Natural(Millis);
+         else
+            Elapsed_Ms := Natural'Last;
+         end if;
       else
          Elapsed_Ms := 0;
       end if;
