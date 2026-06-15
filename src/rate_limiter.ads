@@ -1,5 +1,5 @@
 --  rate_limiter.ads
---  Version: 0.016
+--  Version: 0.017
 --  
 --  Rate Limiter Package Specification
 --  Throttles operations (e.g., for sensor sampling)
@@ -27,41 +27,42 @@ is
    --  Rate limiter configuration type
    type Rate_Limiter_Config is private;
 
-   --  Default configuration: allows every operation (0 ms interval)
+   --  Default configuration: allows every operation (0 count interval)
    Default_Config : constant Rate_Limiter_Config;
 
-   --  Create a rate limiter with specified minimum interval
+   --  Create a rate limiter with specified minimum count interval
    --  
-   --  @param Min_Interval_Ms The minimum time between allowed operations (in milliseconds)
+   --  @param Min_Interval_Count The minimum count between allowed operations
    --  @return A configured rate limiter
-   function Create (Min_Interval_Ms : Natural) return Rate_Limiter_Config;
+   function Create (Min_Interval_Count : Natural) return Rate_Limiter_Config;
 
-   --  Check if operation is allowed based on rate limit
+   --  Check if operation is allowed based on rate limit and update state
    --  Uses a counter-based approach for SPARK verification
    --  
-   --  @param Limiter The rate limiter to check
-   --  @return True if operation is allowed, False if rate limited
-   function Is_Allowed (Limiter : Rate_Limiter_Config) return Boolean
-     with Global => (State);
+   --  @param Limiter The rate limiter to check and update
+   --  @param Allowed Set to True if operation is allowed, False if rate limited
+   procedure Check (Limiter : Rate_Limiter_Config; Allowed : out Boolean)
+     with Global => (In_Out => State);
 
    --  Reset the rate limiter (call this periodically to allow operations)
-   procedure Reset (Limiter : Rate_Limiter_Config);
+   procedure Reset (Limiter : Rate_Limiter_Config)
+     with Global => (In_Out => State);
 
    --  Get the minimum interval for a rate limiter
    --  
    --  @param Limiter The rate limiter to query
-   --  @return Minimum interval in milliseconds
+   --  @return Minimum interval in counts
    function Get_Min_Interval (Limiter : Rate_Limiter_Config) return Natural;
 
 private
 
-   --  Minimum interval between operations (in milliseconds)
+   --  Minimum interval between operations (in counts)
    type Rate_Limiter_Config is record
-      Min_Interval_Ms : Natural;
+      Min_Interval_Count : Natural;
    end record;
 
    --  Default configuration: allows every operation
    Default_Config : constant Rate_Limiter_Config := 
-     (Min_Interval_Ms => 0);
+     (Min_Interval_Count => 0);
 
 end Rate_Limiter;

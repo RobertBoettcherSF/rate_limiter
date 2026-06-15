@@ -1,5 +1,5 @@
 --  rate_limiter.adb
---  Version: 0.016
+--  Version: 0.017
 --  
 --  Rate Limiter Package Body
 --  Implementation of rate limiting functionality
@@ -20,45 +20,43 @@
 
 package body Rate_Limiter with
    SPARK_Mode => On,
-   Refined_State => (State => (Last_Execution_Count, Last_Reset_Count))
+   Refined_State => (State => (Current_Count, Target_Count))
 is
 
    --  State variables to track execution counts
-   Last_Execution_Count : Natural := 0;
-   Last_Reset_Count    : Natural := 0;
+   Current_Count : Natural := 0;
+   Target_Count  : Natural := 0;
 
-   --  Create a rate limiter with specified minimum interval
-   function Create (Min_Interval_Ms : Natural) return Rate_Limiter_Config is
+   --  Create a rate limiter with specified minimum count interval
+   function Create (Min_Interval_Count : Natural) return Rate_Limiter_Config is
    begin
-      return (Min_Interval_Ms => Min_Interval_Ms);
+      return (Min_Interval_Count => Min_Interval_Count);
    end Create;
 
-   --  Check if operation is allowed based on rate limit
-   --  Counter-based: allows operation if count >= min_interval
-   function Is_Allowed (Limiter : Rate_Limiter_Config) return Boolean is
+   --  Check if operation is allowed based on rate limit and update state
+   procedure Check (Limiter : Rate_Limiter_Config; Allowed : out Boolean) is
    begin
-      if Last_Execution_Count >= Limiter.Min_Interval_Ms then
-         Last_Execution_Count := 0;
-         return True;
+      if Current_Count >= Limiter.Min_Interval_Count then
+         Current_Count := 0;
+         Allowed := True;
       else
-         Last_Execution_Count := Last_Execution_Count + 1;
-         return False;
+         Current_Count := Current_Count + 1;
+         Allowed := False;
       end if;
-   end Is_Allowed;
+   end Check;
 
-   --  Reset the rate limiter (call this periodically)
+   --  Reset the rate limiter (call this periodically to increment counter)
    procedure Reset (Limiter : Rate_Limiter_Config) is
    begin
-      Last_Reset_Count := Last_Reset_Count + 1;
-      if Last_Execution_Count < Limiter.Min_Interval_Ms then
-         Last_Execution_Count := Last_Execution_Count + 1;
+      if Current_Count < Limiter.Min_Interval_Count then
+         Current_Count := Current_Count + 1;
       end if;
    end Reset;
 
    --  Get the minimum interval for a rate limiter
    function Get_Min_Interval (Limiter : Rate_Limiter_Config) return Natural is
    begin
-      return Limiter.Min_Interval_Ms;
+      return Limiter.Min_Interval_Count;
    end Get_Min_Interval;
 
 end Rate_Limiter;
