@@ -1,5 +1,5 @@
 --  rate_limiter.ads
---  Version: 0.010
+--  Version: 0.011
 --  
 --  Rate Limiter Package Specification
 --  Throttles operations (e.g., for sensor sampling)
@@ -23,7 +23,7 @@ with Ada.Real_Time; use Ada.Real_Time;
 package Rate_Limiter with
    SPARK_Mode => On,
    Abstract_State => (State,
-                      Clock_State with External => Ada.Real_Time.Clock_Epoch)
+                      Clock_State with External)
 is
    pragma Elaborate_Body;
 
