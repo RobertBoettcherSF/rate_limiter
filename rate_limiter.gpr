@@ -25,11 +25,15 @@ project Rate_Limiter is
    package Compiler is
       for Default_Switches ("Ada") use
         ("-gnatX",       --  Enable SPARK extensions
-         "-gnatk1",      --  Loop unrolling factor (minimum valid value)
          "-gnata",       --  Enable assertions
          "-gnatwae",     --  Warnings as errors
          "-gnatwe");     --  Treat warnings as errors
    end Compiler;
+
+   --  SPARK specific package to configure gnatprove
+   package Proof is
+      for Switches ("Ada") use ("-u");  --  Disable loop unrolling
+   end Proof;
 
    --  Builder options
    package Builder is
