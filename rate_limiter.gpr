@@ -20,19 +20,12 @@ project Rate_Limiter is
    for Source_Dirs use ("src");
    for Object_Dir use "obj";
    for Exec_Dir use "bin";
-   for Main use ("test_rate_limiter.adb");
 
-   --  SPARK configuration for formal verification
-   for Languages use ("Ada");
-   for Language ("Ada") use
-      ("SPARK", "SPARK_2014");
-
-   --  Compiler options
+   --  Compiler options for SPARK
    package Compiler is
       for Default_Switches ("Ada") use
         ("-gnatX",       --  Enable SPARK extensions
          "-gnatk",       --  Check SPARK contracts
-         "-gnatN",       --  No elaboration checks (for SPARK)
          "-gnata",       --  Enable assertions
          "-gnatwae",     --  Warnings as errors
          "-gnatwe");     --  Treat warnings as errors
@@ -42,11 +35,5 @@ project Rate_Limiter is
    package Builder is
       for Executable ("test_rate_limiter.adb") use "test_rate_limiter";
    end Builder;
-
-   --  SPARK specific options
-   package SPARK is
-      for Proof_Tool use "gnatprove";
-      for Flow_Tool use "gnatflow";
-   end SPARK;
 
 end Rate_Limiter;
