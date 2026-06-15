@@ -1,5 +1,5 @@
 --  rate_limiter.ads
---  Version: 0.004
+--  Version: 0.005
 --  
 --  Rate Limiter Package Specification
 --  Throttles operations (e.g., for sensor sampling)
@@ -43,7 +43,9 @@ is
    --  @param Limiter The rate limiter to check
    --  @return True if operation is allowed, False if rate limited
    function Is_Allowed (Limiter : Rate_Limiter_Config) return Boolean
-     with Global => (State);
+     with Global => (Input  => Ada.Real_Time.Clock,
+                     In_Out => State),
+          Depends => (Is_Allowed => (Limiter, State, Ada.Real_Time.Clock));
 
    --  Get the minimum interval for a rate limiter
    --  
