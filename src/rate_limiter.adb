@@ -20,7 +20,8 @@
 with Ada.Real_Time; use Ada.Real_Time;
 
 package body Rate_Limiter with
-   SPARK_Mode => On
+   SPARK_Mode => On,
+   Refined_State => (State => Last_Execution_Time)
 is
 
    --  State variable to track last execution time
